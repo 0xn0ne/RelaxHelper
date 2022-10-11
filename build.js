@@ -70,6 +70,7 @@ let files = walkSync("./", [
   /datadir.*/,
   /.*\.DS_Store.*/,
   /.*\.zip/,
+  /.git/,
 ]);
 
 for (const dirname in files) {

@@ -103,8 +103,11 @@ dist
 # TernJS port file
 .tern-port
 
-# other
+# other dirs
 datadir/
 cache/
 .history/
 .DS_Store
+
+# other files
+*.zip
