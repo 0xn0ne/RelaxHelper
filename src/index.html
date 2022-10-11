@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="icon" href="./favicon.ico" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RelaxHelper</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
+  </head>
+
+  <body>
+    <div id="app">
+      <ul class="nav nav-tabs">
+        <li class="nav-item" v-for="(value, key) in menus">
+          <a
+            class="nav-link"
+            :class="{active : value.isactive}"
+            @click="switchPanel(key)"
+            >{{value.name}}</a
+          >
+        </li>
+      </ul>
+
+      <div id="exportPanel" v-if="menus.exportPanel.isactive">
+        <div class="card border-0 bg-body">
+          <div class="card-body">
+            <h5 class="card-title">任务导出面板</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              进入任务面板后该功能才可生效，若未进入任务面板请选择一个任务再进行操作。导出的数据文件为
+              CSV 格式
+            </h6>
+            <div class="row">
+              <div
+                class="col-sm-3 col-md-2"
+                v-for="(value, key) in exportColumns"
+              >
+                <input
+                  class="form-check-input"
+                  :id="key"
+                  :name="key"
+                  type="checkbox"
+                  v-model="value.ischecked"
+                  :disabled="key == 'ip' || key == 'port'"
+                />
+                <!-- <input class="form-check-input" :id="key" :name="key" type="checkbox" v-else v-model="value.ischecked" /> -->
+                <label :for="key">&nbsp;{{ value.label }}</label>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+              <div>
+                <div style="padding-right: 0.5rem !important">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="saveConfig"
+                  >
+                    保存配置
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <div class="px-2">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="exportGobyData"
+                  >
+                    导出任务数据
+                  </a>
+                </div>
+                <!-- <div style="padding-left: 0.5rem !important">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="asyncQueryData"
+                  >
+                    测试
+                  </a>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="scanPanel" v-if="menus.scanPanel.isactive">
+        <div class="card border-0 bg-body">
+          <div class="card-body">
+            <h5 class="card-title">任务扫描面板</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              进入任务面板后该功能才可生效，若未进入任务面板请选择一个任务再进行操作。
+            </h6>
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                平均扫描进度：{{cache.awvs.progress}}%，高危：{{cache.awvs.high}}，中危：{{cache.awvs.medium}}，低危：{{cache.awvs.low}}，信息：{{cache.awvs.info}}
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="col-sm-3 col-md-2"
+                v-for="(value, key) in scanColumns"
+              >
+                <input
+                  class="form-check-input"
+                  :id="key"
+                  :name="key"
+                  type="checkbox"
+                  v-model="value.ischecked"
+                  :disabled="!value.isable"
+                />
+                <label :for="key">&nbsp;{{ value.label }}</label>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+              <div>
+                <div style="padding-right: 0.5rem !important">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="saveConfig"
+                  >
+                    保存配置
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <div class="px-2">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    @click="deleteAllTarget"
+                  >
+                    清空所有目标
+                  </a>
+                </div>
+                <div class="px-2">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="exportScanData"
+                  >
+                    导出数据
+                  </a>
+                </div>
+                <div style="padding-left: 0.5rem">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="submitScan"
+                  >
+                    提交扫描任务
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="searchPanel" v-if="menus.searchPanel.isactive">
+        <div class="card border-0 bg-body">
+          <div class="card-body">
+            <h5 class="card-title">搜索面板</h5>
+            <h6 class="card-subtitle mb-2 text-muted">目前仅支持FOFA。</h6>
+            <div class="row">
+              <div
+                class="col-sm-3 col-md-2"
+                v-for="(value, key) in searchColumns"
+              >
+                <input
+                  class="form-check-input"
+                  :id="key"
+                  :name="key"
+                  type="checkbox"
+                  v-model="value.ischecked"
+                  :disabled="!value.isable"
+                />
+                <label :for="key">&nbsp;{{ value.label }}</label>
+              </div>
+              <div class="col-sm-12 col-md-12 input-group input-group-sm py-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder='开始搜索，如：ip="172.0.0.0/16" && title="login"'
+                  v-model="cache.fofa.query"
+                  v-on:keyup.enter="search()"
+                />
+                <select
+                  class="form-select"
+                  v-model="cache.fofa.pageSize"
+                  style="flex-basis: 100px; flex-grow: 0"
+                  v-on:keyup.enter="search()"
+                >
+                  <option
+                    v-for="value in cache.fofa.pageSizeList"
+                    :value="value"
+                  >
+                    {{value}}
+                  </option></select
+                ><button
+                  class="btn btn-outline-primary"
+                  type="button"
+                  @click="search()"
+                  v-on:keyup.enter="search()"
+                >
+                  搜索
+                </button>
+              </div>
+              <div
+                class="col-sm-12 col-md-12"
+                v-if="cache.fofa.results.length > 0"
+              >
+                <table class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        <input
+                          id="select_all"
+                          class="form-check-input"
+                          type="checkbox"
+                          @click="selectAll"
+                        />
+                        <!-- <label for="select_all">&nbsp;全选</label> -->
+                      </th>
+                      <th scope="col">地址</th>
+                      <th scope="col">端口</th>
+                      <th scope="col">协议</th>
+                      <th scope="col">国家</th>
+                      <th scope="col">FID</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(value, index) in cache.fofa.results">
+                      <td>
+                        <!-- <input
+                        class="form-check-input"
+                        :id="key"
+                        :name="key"
+                        type="checkbox"
+                        v-model="value.ischecked"
+                        :disabled="!value.isable"
+                      /> -->
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          :id="index"
+                          :value="genSearchId(value)"
+                          v-model="cache.fofa.resultsSelected"
+                        />
+                      </td>
+                      <td><label :for="index">{{value[1]}}</label></td>
+                      <td><label :for="index">{{value[2]}}</label></td>
+                      <td><label :for="index">{{value[3]}}</label></td>
+                      <td><label :for="index">{{value[4]}}</label></td>
+                      <td><label :for="index">{{value[5]}}</label></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div
+                  class="col-sm-12 col-md-12"
+                  v-if="cache.fofa.results.length > 0"
+                >
+                  <div class="d-flex justify-content-center">
+                    <ul class="pagination pagination-sm">
+                      <li class="page-item">
+                        <a
+                          class="page-link"
+                          :disable="cache.fofa.pageCurr === 1"
+                          @click="search(cache.fofa.pageCurr - 1)"
+                        >
+                          &laquo;
+                        </a>
+                      </li>
+                      <li
+                        class="page-item"
+                        v-for="value in cache.fofa.pageList"
+                      >
+                        <a
+                          class="page-link"
+                          :class="{active: value === cache.fofa.pageCurr}"
+                          @click="search(value)"
+                          >{{value}}</a
+                        >
+                      </li>
+                      <li class="page-item">
+                        <a
+                          class="page-link"
+                          :disable="cache.fofa.pageCurr === cache.fofa.pageTotal"
+                          @click="search(cache.fofa.pageCurr + 1)"
+                        >
+                          &raquo;
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="col-sm-3 col-md-2"
+                v-for="value in cache.fofa.result"
+              ></div>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+              <div>
+                <div style="padding-right: 0.5rem !important">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="saveConfig"
+                  >
+                    保存配置
+                  </a>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <div style="padding-left: 0.5rem !important">
+                  <a
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="addToGobyScan"
+                  >
+                    添加扫描目标
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./assets/js/vue.global.js"></script>
+
+  <script>
+    let goby = parent.goby;
+    let utils = parent.utils;
+    var app = Vue.createApp({
+      mounted() {
+        for (let key in utils.config.scanColumns) {
+          utils.isAbleChecker(utils.config.scanColumns[key].label);
+        }
+        for (let key in utils.config.searchColumns) {
+          utils.isAbleChecker(utils.config.searchColumns[key].label);
+        }
+        if (utils.config.scanColumns.awvs.isable) {
+          this.queryScanStatus().then();
+        }
+      },
+      data() {
+        return utils.config;
+        // return {
+        //   menus: {
+        //     exportCsv: { name: "导出", isactive: true },
+        //     scanner: { name: "扫描", isactive: false }
+        //   },
+        //   exportColumns: {
+        //     ip: { label: "IP", ischecked: true },
+        //     mac: { label: "MAC", ischecked: false },
+        //     hostname: { label: "主机名", ischecked: false },
+        //     os: { label: "操作系统", ischecked: false },
+        //     port: { label: "端口", ischecked: true },
+        //     protocol: { label: "协议", ischecked: false },
+        //     product: { label: "产品", ischecked: false },
+        //   },
+        //   // exportConfig: {}
+        // };
+      },
+      computed: {
+        updateExportInfo() {},
+      },
+      methods: {
+        // exportConfigUpdate() {
+        //   goby.getAsset(goby.getTaskId(), function (taskinfos) {
+        //     taskinfos.total.taskId = taskinfos.taskId
+        //     return taskinfos.total
+        //   })
+        // },
+        async inTaskPanel() {
+          if (goby.getTaskId()) {
+            return true;
+          }
+          goby.showInformationMessage("请进入任务面板后再使用该功能");
+          return false;
+        },
+        async switchPanel(panel_name) {
+          for (let key in this.menus) {
+            if (key === panel_name) {
+              this.menus[key].isactive = true;
+            } else {
+              this.menus[key].isactive = false;
+            }
+          }
+        },
+        async saveConfig() {
+          filename = utils.path.join(utils.pathlist.root, "src", "config.json");
+          let save_config = utils.deepClone(utils.config);
+          delete save_config["cache"];
+          utils.fileWrite(filename, JSON.stringify(save_config));
+          goby.showInformationMessage("保存成功");
+        },
+        async queryData(
+          options = {
+            data_handler: (data) => {
+              return data;
+            },
+          }
+        ) {
+          let self = this;
+          await self.inTaskPanel();
+          let ret = [];
+          let taskinfos;
+          await new Promise((resolve) => {
+            goby.getAsset(goby.getTaskId(), function (data) {
+              taskinfos = data;
+              resolve();
+            });
+          });
+          for (ip_inf of taskinfos.data.ips) {
+            let tags = [];
+            if (ip_inf.tags) {
+              for (tag of ip_inf.tags) {
+                tags.push(tag.product);
+              }
+              tags = tags.join(",");
+            } else {
+              tags = "";
+            }
+            let ip_base_inf = {
+              ip: ip_inf.ip,
+              mac: ip_inf.mac,
+              os: ip_inf.os,
+              hostname: ip_inf.hostname,
+              tags: tags,
+              port: "",
+              protocol: "",
+              baseprotocol: "",
+            };
+            // is_web 该参数取消，有些protocols是http、https协议，但web就是没标记
+            if (!ip_inf.ports) {
+              let t_data = options.data_handler(ip_base_inf);
+              if (utils.isHave(t_data)) {
+                ret.push(t_data);
+              }
+              continue;
+            }
+            for (port of ip_inf.ports) {
+              row_info = JSON.parse(JSON.stringify(ip_base_inf));
+              row_info.port = port.port;
+              row_info.baseprotocol = port.baseprotocol;
+              let netloc = row_info.ip + ":" + row_info.port;
+              if (utils.isHave(ip_inf.protocols) && ip_inf.protocols[netloc]) {
+                row_info.protocol = ip_inf.protocols[netloc].protocol;
+              }
+              let t_data = options.data_handler(row_info);
+              if (utils.isHave(t_data)) {
+                ret.push(t_data);
+              }
+            }
+          }
+          return ret;
+        },
+        async exportGobyData(event) {
+          let self = this;
+
+          let result = await self.queryData({
+            data_handler: (row) => {
+              for (let col in row) {
+                if (!self.exportColumns[col].ischecked) {
+                  delete row[col];
+                }
+              }
+              return row;
+            },
+          });
+          filename = utils.path.join(
+            utils.pathlist.data,
+            "export_gobytask_" + utils.timeFormat("%Y%m%d_%H%M%S")
+          );
+          utils.fileWrite(filename + ".json", JSON.stringify(result));
+          utils.fileWrite(filename + ".csv", utils.genCSVText(result));
+
+          goby.showInformationMessage("导出完成，文件保存为：" + filename);
+          console.log("导出文件名为：", filename, "数据为：", result);
+        },
+        async exportScanData(event) {
+          if (!utils.isHave(utils.config.cache.awvs.target_infos)) {
+            goby.showInformationMessage("当前Goby任务未提交过扫描");
+            return;
+          }
+          let response = await utils.awvs.getResults(
+            utils.objectValues(utils.config.cache.awvs.target_infos)
+          );
+          let export_data = [];
+
+          for (const iter of response) {
+            if (!utils.isHave(iter.scanning_app.wvs.main.vulns)) {
+              continue;
+            }
+            let host_info = utils.objectValues(iter.scanning_app.wvs.hosts)[0];
+            let severity2name = ["info", "low", "medium", "high"];
+            let t_data = {
+              status: iter.status,
+              start_date: iter.scanning_app.wvs.start_date || "-",
+              end_date: iter.scanning_app.wvs.end_date || "-",
+              host: host_info.host,
+              ip: host_info.host.split(":")[0],
+              port: host_info.host.split(":")[1],
+              os: host_info.target_info.os,
+              vuln_name: "",
+              severity: 0,
+            };
+            for (const vuln of iter.scanning_app.wvs.main.vulns) {
+              let vuln_data = utils.deepClone(t_data);
+              vuln_data.vuln_name = vuln.name;
+              vuln_data.severity = severity2name[vuln.severity];
+              export_data.push(vuln_data);
+            }
+          }
+          filename = utils.path.join(
+            utils.pathlist.data,
+            "export_scan_result_" + utils.timeFormat("%Y%m%d_%H%M%S")
+          );
+          utils.fileWrite(filename + ".json", JSON.stringify(export_data));
+          utils.fileWrite(filename + ".csv", utils.genCSVText(export_data));
+
+          goby.showInformationMessage("导出完成，文件保存为：" + filename);
+          console.log("导出文件名为：", filename, "数据为：", export_data);
+        },
+        async queryScanStatus() {
+          let scan_info = utils.config.cache.awvs;
+          let keys_len = 0;
+          scan_info.progress = 0;
+          scan_info.high = 0;
+          scan_info.medium = 0;
+          scan_info.low = 0;
+          scan_info.info = 0;
+          if (!utils.isHave(utils.config.cache.awvs.target_infos)) {
+            return;
+          }
+          for (let key in utils.config.cache.awvs.target_infos) {
+            let response = await utils.awvs.getScan(
+              utils.config.cache.awvs.target_infos[key].scan_id
+            );
+            if (!utils.isHave(response.current_session)) {
+              continue;
+            }
+            scan_info.progress += response.current_session.progress;
+            scan_info.high += response.current_session.severity_counts.high;
+            scan_info.medium += response.current_session.severity_counts.medium;
+            scan_info.low += response.current_session.severity_counts.low;
+            scan_info.info += response.current_session.severity_counts.info;
+            keys_len += 1;
+          }
+          scan_info.progress = Math.floor(scan_info.progress / keys_len);
+          return scan_info;
+        },
+        async submitScan(event) {
+          let self = this;
+          let targets = [];
+          let result = await self.queryData();
+
+          for (data of result) {
+            if (data.protocol === "http" || data.protocol === "https") {
+              targets.push({
+                address: `${data.protocol}://${data.ip}:${data.port}`,
+                description: "RelaxHelper Task",
+              });
+            }
+          }
+          if (!utils.isHave(targets)) {
+            goby.showInformationMessage(`未发现 WEB 端口，操作取消`);
+            return;
+          }
+          let raw_len = utils.objectKeys(
+            utils.config.cache.awvs.target_infos
+          ).length;
+
+          utils.config.cache.awvs.target_infos = await utils.awvs.autoScans(
+            targets,
+            { target_infos: utils.config.cache.awvs.target_infos }
+          );
+
+          let new_number =
+            utils.objectKeys(utils.config.cache.awvs.target_infos).length -
+            raw_len;
+          if (new_number === 0) {
+            goby.showInformationMessage(
+              `未新增目标，AWVS无响应或当前任务的目标均加入过扫描队列`
+            );
+          } else {
+            goby.showInformationMessage(
+              `开始扫描，新增 ${new_number} 个目标，数量较多的时候 AWVS 扫描启动会有约 3 分钟的延迟`
+            );
+          }
+          // utils.config.cache.awvs.target_infos = utils.objectUpdate(
+          //   utils.config.cache.awvs.target_infos,
+          //   ret
+          // );
+          utils.fileWrite(
+            utils.path.join(utils.pathlist.cache, "awvs_cache.json"),
+            JSON.stringify(utils.config.cache.awvs)
+          );
+        },
+        async deleteAllTarget(event) {
+          let is_clear = confirm("确认要清空 AWVS 中的所有目标");
+          if (!is_clear) {
+            return;
+          }
+          let ret = await utils.awvs.getTargets({ limit: -1 });
+          let target_id_list = [];
+          if (!utils.isHave(ret)) {
+            return;
+          }
+          for (const target of ret.targets) {
+            target_id_list.push(target.target_id);
+          }
+          ret = await utils.awvs.deleteTargets(target_id_list);
+          utils.config.cache.awvs = {
+            target_infos: {},
+            progress: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+            info: 0,
+          };
+          utils.fileWrite(
+            utils.path.join(utils.pathlist.cache, "awvs_cache.json"),
+            JSON.stringify(utils.config.cache.awvs)
+          );
+          goby.showInformationMessage(
+            `清空完成，AWVS会稍有延迟，等待 3 分钟后再进行刷新`
+          );
+        },
+        async search(page) {
+          let self = this;
+          if (!utils.isHave(self.cache.fofa.query)) {
+            goby.showInformationMessage(`请输入搜索语法`);
+            return;
+          }
+          page = page || 1;
+          let ret = await utils.fofa.searchAll(self.cache.fofa.query, {
+            page: page,
+            size: self.cache.fofa.pageSize,
+            full: self.searchColumns.ischecked,
+          });
+          if (ret.error) {
+            goby.showInformationMessage(`错误：${ret.errmsg}`);
+            return;
+          }
+
+          self.cache.fofa.results = ret.results;
+          self.cache.fofa.pageList = utils.genPageList(
+            page,
+            Math.ceil(ret.size / self.cache.fofa.pageSize),
+            9
+          );
+          self.cache.fofa.pageCurr = page;
+        },
+        genSearchId(value) {
+          return `${value[1]}:${value[2]}:${value[3]}:${value[5]}`;
+        },
+        async switchPage(value) {
+          let self = this;
+          self.cache.fofa.resultsSelected = [];
+          if (!event.currentTarget.checked) {
+            return;
+          }
+          for (let iter of self.cache.fofa.results) {
+            self.cache.fofa.resultsSelected.push(self.genSearchId(iter));
+          }
+        },
+        async addToGobyScan(event) {
+          let self = this;
+          if (!utils.isHave(self.cache.fofa.resultsSelected)) {
+            goby.showInformationMessage(`错误：未选中任意目标`);
+          }
+          let ips = [];
+          for (let result of self.cache.fofa.resultsSelected) {
+            let ip = result.split(":")[0];
+            if (ips.indexOf(ip) >= 0) {
+              continue;
+            }
+            ips.push(ip);
+          }
+          // GOBY addScanIps 这个 API 有 BUG 第二参数为 0 的时候会塞入一个 undefined 字符串进去，如果是 1 的话就正常
+          goby.addScanIps(ips, 1);
+          goby.showInformationMessage(
+            `共选择 ${self.cache.fofa.resultsSelected.length} 个目标，已将 ${ips.length} 个目标加入扫描列表，部分IP会被去重`
+          );
+        },
+        async selectAll(event) {
+          let self = this;
+          self.cache.fofa.resultsSelected = [];
+          if (!event.currentTarget.checked) {
+            return;
+          }
+          for (let iter of self.cache.fofa.results) {
+            self.cache.fofa.resultsSelected.push(self.genSearchId(iter));
+          }
+        },
+      },
+    }).mount("#app");
+  </script>
+</html>

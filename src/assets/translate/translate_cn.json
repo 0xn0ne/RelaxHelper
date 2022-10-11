@@ -1,0 +1,40 @@
+{
+  "description": "一个简单酷酷的插件。",
+  "contributes": {
+    "configuration": {
+      "AWVS 密钥": {
+        "description": "请输入 AWVS API 密钥"
+      },
+      "AWVS 地址": {
+        "description": "请输入 AWVS 应用地址，如：https://127.0.0.1:3443/"
+      },
+      "FOFA 密钥": {
+        "description": "请输入 FOFA API 密钥"
+      },
+      "FOFA 邮箱": {
+        "description": "请输入 FOFA 登录邮箱，如：root@fofa.info"
+      },
+      "FOFA 地址": {
+        "description": "请输入 FOFA 应用地址，如：https://fofa.info/"
+      }
+    },
+    "views": {
+      "ipDetail": {
+        "bannerTop": [
+          {
+            "title": "relax 扫描",
+            "tips": "使用 relax 扫描"
+          }
+        ]
+      },
+      "toolbar": [
+        {
+          "title": "relax 菜单",
+          "tips": "进入 relax 菜单"
+        }
+      ]
+    }
+  },
+  "readme": "./README.md",
+  "changelog": "./CHANGELOG.md"
+}
