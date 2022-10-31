@@ -105,9 +105,10 @@ dist
 
 # other dirs
 datadir/
-cache/
+.cache/
 .history/
 .DS_Store
 
 # other files
 *.zip
+*.key

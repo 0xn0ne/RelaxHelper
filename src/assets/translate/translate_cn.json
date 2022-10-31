@@ -8,6 +8,9 @@
       "AWVS 地址": {
         "description": "请输入 AWVS 应用地址，如：https://127.0.0.1:3443/"
       },
+      "FSCAN 路径": {
+        "description": "请输入 FSCAN 路径，如：C:\\Users\\username\\Downloads\\fscan.exe"
+      },
       "FOFA 密钥": {
         "description": "请输入 FOFA API 密钥"
       },

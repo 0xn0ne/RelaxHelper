@@ -2,7 +2,7 @@
   "name": "RelaxHelper",
   "publisher": "0xn0ne",
   "description": "just so so.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "icon": "src/assets/images/logo.png",
   "engines": "1.8.230",
   "initEvents": "",
@@ -19,6 +19,12 @@
         "type": "string",
         "default": "https://127.0.0.1:3443/",
         "description": "请输入 AWVS 应用地址",
+        "fromDialog": true
+      },
+      "FSCAN PATH": {
+        "type": "string",
+        "default": "",
+        "description": "请输入 FSCAN 路径",
         "fromDialog": true
       },
       "FOFA API KEY": {

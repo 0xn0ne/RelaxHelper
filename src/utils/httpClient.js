@@ -75,7 +75,11 @@ httpClient.create = function (
       //         path: "/error/404"
       //     });
       // }
-      if (!error.response.status || error.response.status < 400) {
+      if (
+        !error.response ||
+        !error.response.status ||
+        error.response.status < 400
+      ) {
         return error;
       }
       // 返回 response 里的错误信息

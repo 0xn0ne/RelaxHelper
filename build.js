@@ -65,12 +65,13 @@ function timeFormat(fmt, date = new Date()) {
 
 let version = readJson("./package.json").version;
 let files = walkSync("./", [
+  /.git/,
   /\.history.*/,
   /cache.*/,
   /datadir.*/,
   /.*\.DS_Store.*/,
   /.*\.zip/,
-  /.git/,
+  /.*\.key/,
 ]);
 
 for (const dirname in files) {

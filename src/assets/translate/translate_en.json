@@ -8,6 +8,9 @@
       "AWVS ADDRESS": {
         "description": "please enter AWVS address. eg. https://127.0.0.1:3443/"
       },
+      "FSCAN PATH": {
+        "description": "please enter FSCAN path. eg. C:\\Users\\username\\Downloads\\fscan.exe"
+      },
       "FOFA API KEY": {
         "description": "please enter FOFA api key"
       },

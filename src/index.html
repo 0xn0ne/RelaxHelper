@@ -24,31 +24,29 @@
       <div id="exportPanel" v-if="menus.exportPanel.isactive">
         <div class="card border-0 bg-body">
           <div class="card-body">
-            <h5 class="card-title">任务导出面板</h5>
+            <h5 class="card-title">Goby</h5>
             <h6 class="card-subtitle mb-2 text-muted">
-              进入任务面板后该功能才可生效，若未进入任务面板请选择一个任务再进行操作。导出的数据文件为
-              CSV 格式
+              Goby是一款基于网络空间测绘技术的新一代网络安全工具，它通过给目标网络建立完整的资产知识库，进行网络安全事件应急与漏洞应急。
             </h6>
             <div class="row">
-              <div
-                class="col-sm-3 col-md-2"
-                v-for="(value, key) in exportColumns"
-              >
+              <div class="col-sm-3 col-md-2" v-for="(value, key) in eprtUtil">
                 <input
                   class="form-check-input"
                   :id="key"
                   :name="key"
                   type="checkbox"
                   v-model="value.ischecked"
-                  :disabled="key == 'ip' || key == 'port'"
+                  :disabled="!value.isable"
                 />
                 <!-- <input class="form-check-input" :id="key" :name="key" type="checkbox" v-else v-model="value.ischecked" /> -->
                 <label :for="key">&nbsp;{{ value.label }}</label>
               </div>
             </div>
+          </div>
+          <div class="card-footer">
             <div class="d-flex justify-content-between py-2">
               <div>
-                <div style="padding-right: 0.5rem !important">
+                <div class="pe-2">
                   <a
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -59,7 +57,7 @@
                 </div>
               </div>
               <div class="d-flex justify-content-end">
-                <div class="px-2">
+                <div class="ps-2">
                   <a
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -68,15 +66,6 @@
                     导出任务数据
                   </a>
                 </div>
-                <!-- <div style="padding-left: 0.5rem !important">
-                  <a
-                    type="button"
-                    class="btn btn-sm btn-primary"
-                    @click="asyncQueryData"
-                  >
-                    测试
-                  </a>
-                </div> -->
               </div>
             </div>
           </div>
@@ -86,19 +75,42 @@
       <div id="scanPanel" v-if="menus.scanPanel.isactive">
         <div class="card border-0 bg-body">
           <div class="card-body">
-            <h5 class="card-title">任务扫描面板</h5>
+            <h5 class="card-title">Acunetix Web Vulnerability Scanner</h5>
             <h6 class="card-subtitle mb-2 text-muted">
-              进入任务面板后该功能才可生效，若未进入任务面板请选择一个任务再进行操作。
+              Acunetix Web Vulnerability
+              Scanner（AWVS）可以扫描任何通过Web浏览器访问和遵循HTTP/HTTPS规则的Web站点。适用于任何中小型和大型企业的内联网、外延网和面向客户、雇员、厂商和其它人员的Web网站。
             </h6>
             <div class="row">
-              <div class="col-sm-12 col-md-12">
-                平均扫描进度：{{cache.awvs.progress}}%，高危：{{cache.awvs.high}}，中危：{{cache.awvs.medium}}，低危：{{cache.awvs.low}}，信息：{{cache.awvs.info}}
+              <div class="col-sm-3 col-md-2">
+                <p
+                  class="text-center mb-2 py-1"
+                  :class="[scanUtil.awvs.isable ? 'text-bg-success' : 'text-bg-danger']"
+                >
+                  状态：{{scanUtil.awvs.isable? '已部署': '未连接'}}
+                </p>
+                <p
+                  class="text-center mb-2 py-1"
+                  :class="[scanUtil.awvs.ischecked ? 'text-bg-success' : 'text-bg-danger']"
+                >
+                  状态：
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    :id="scanUtil.awvs.label"
+                    :name="scanUtil.awvs.label"
+                    v-model="scanUtil.awvs.ischecked"
+                  />
+                  <label :for="scanUtil.awvs.label"
+                    >{{scanUtil.awvs.ischecked? '启动': '关闭'}}</label
+                  >
+                </p>
               </div>
-            </div>
-            <div class="row">
-              <div
+              <div class="col-sm-9 col-md-10">
+                平均扫描进度：{{awvsStatus.progress}}%，高危：{{awvsStatus.high}}，中危：{{awvsStatus.medium}}，低危：{{awvsStatus.low}}，信息：{{awvsStatus.info}}
+              </div>
+              <!-- <div
                 class="col-sm-3 col-md-2"
-                v-for="(value, key) in scanColumns"
+                v-for="(value, key) in scanUtil"
               >
                 <input
                   class="form-check-input"
@@ -109,11 +121,101 @@
                   :disabled="!value.isable"
                 />
                 <label :for="key">&nbsp;{{ value.label }}</label>
+              </div> -->
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">fscan</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              fscan
+              是一款内网综合扫描工具，方便一键自动化、全方位漏扫扫描。支持主机存活探测、端口扫描、常见服务的爆破、ms17010、redis批量写公钥、计划任务反弹shell、读取win网卡信息、web指纹识别、web漏洞扫描、netbios探测、域控识别等功能。
+            </h6>
+            <h6 class="card-subtitle mb-2">
+              注意：由于调用命令行会占用 Electron 通信管道，在使用 fscan
+              进行扫描时 Goby 运行会被阻塞约 10 秒左右（大白话就是卡住 10
+              秒左右）。此外 fscan
+              部署检测只在插件加载时检测，若更新了插件路径配置需重新打开 Goby
+              才可识别到部署文件
+            </h6>
+            <div class="row">
+              <div class="col-sm-3 col-md-2 px-2">
+                <p
+                  class="text-center mb-2 py-1"
+                  :class="[scanUtil.fscan.isable ? 'text-bg-success' : 'text-bg-danger']"
+                >
+                  状态：{{scanUtil.fscan.isable? '已部署': '未连接'}}
+                </p>
+                <p
+                  class="text-center mb-2 py-1"
+                  :class="[scanUtil.fscan.ischecked ? 'text-bg-success' : 'text-bg-danger']"
+                >
+                  状态：
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    :id="scanUtil.fscan.label"
+                    :name="scanUtil.fscan.label"
+                    v-model="scanUtil.fscan.ischecked"
+                  />
+                  <label :for="scanUtil.fscan.label"
+                    >{{scanUtil.fscan.ischecked? '启动': '关闭'}}</label
+                  >
+                </p>
+              </div>
+              <div class="col-sm-9 col-md-10 px-2">
+                <p class="mb-0">
+                  平均扫描进度：{{fscanStatus.progress}}%，问题数：{{fscanStatus.vulnum}}
+                </p>
+                <p class="mb-0" style="overflow-y: auto; max-height: 3rem">
+                  命令预览：{{genCmd}}
+                </p>
               </div>
             </div>
+            <div class="row">
+              <div
+                class="col-sm-3 col-md-2 py-1"
+                v-for="(value, key) in checkFscan"
+              >
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  :id="key"
+                  :name="key"
+                  v-model="value.ischecked"
+                  :disabled="!value.isable"
+                />
+                <label :for="key">&nbsp;{{ value.label }}</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-group py-1" v-for="(value, key) in inputFscan">
+                <div class="input-group-text">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    :id="key"
+                    :name="key"
+                    v-model="value.ischecked"
+                    :disabled="!value.isable"
+                  />
+                </div>
+                <label :for="key" class="input-group-text"
+                  >{{ value.label }}</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  :title="value.placeholder"
+                  :placeholder="value.placeholder"
+                  v-model="value.value"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
             <div class="d-flex justify-content-between py-2">
               <div>
-                <div style="padding-right: 0.5rem !important">
+                <div class="pe-2">
                   <a
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -142,11 +244,11 @@
                     导出数据
                   </a>
                 </div>
-                <div style="padding-left: 0.5rem">
+                <div class="ps-2">
                   <a
                     type="button"
                     class="btn btn-sm btn-primary"
-                    @click="submitScan"
+                    @click="runScan"
                   >
                     提交扫描任务
                   </a>
@@ -160,13 +262,13 @@
       <div id="searchPanel" v-if="menus.searchPanel.isactive">
         <div class="card border-0 bg-body">
           <div class="card-body">
-            <h5 class="card-title">搜索面板</h5>
-            <h6 class="card-subtitle mb-2 text-muted">目前仅支持FOFA。</h6>
+            <h5 class="card-title">FOFA</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              FOFA
+              是白帽汇推出的一款网络空间搜索引擎，它通过进行网络空间测绘，能够帮助研究人员或者企业迅速进行网络资产匹配，例如进行漏洞影响范围分析、应用分布统计、应用流行度排名统计等。
+            </h6>
             <div class="row">
-              <div
-                class="col-sm-3 col-md-2"
-                v-for="(value, key) in searchColumns"
-              >
+              <div class="col-sm-3 col-md-2" v-for="(value, key) in srchUtil">
                 <input
                   class="form-check-input"
                   :id="key"
@@ -302,9 +404,11 @@
                 v-for="value in cache.fofa.result"
               ></div>
             </div>
+          </div>
+          <div class="card-footer">
             <div class="d-flex justify-content-between py-2">
               <div>
-                <div style="padding-right: 0.5rem !important">
+                <div class="pe-2">
                   <a
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -315,7 +419,7 @@
                 </div>
               </div>
               <div class="d-flex justify-content-end">
-                <div style="padding-left: 0.5rem !important">
+                <div class="ps-2">
                   <a
                     type="button"
                     class="btn btn-sm btn-primary"
@@ -334,54 +438,85 @@
   <script src="./assets/js/vue.global.js"></script>
 
   <script>
-    let goby = parent.goby;
-    let utils = parent.utils;
+    const rGoby = parent.rGoby;
+    const rUtils = parent.rUtils;
+    const rData = parent.rData;
+    const rAwvs = parent.rAwvs;
+    const rFscan = parent.rFscan;
+    const rFofa = parent.rFofa;
+
     var app = Vue.createApp({
       mounted() {
-        for (let key in utils.config.scanColumns) {
-          utils.isAbleChecker(utils.config.scanColumns[key].label);
-        }
-        for (let key in utils.config.searchColumns) {
-          utils.isAbleChecker(utils.config.searchColumns[key].label);
-        }
-        if (utils.config.scanColumns.awvs.isable) {
-          this.queryScanStatus().then();
-        }
+        rUtils.isAbleChecker().then(() => {
+          this.queryScanStatus();
+        });
       },
       data() {
-        return utils.config;
-        // return {
-        //   menus: {
-        //     exportCsv: { name: "导出", isactive: true },
-        //     scanner: { name: "扫描", isactive: false }
-        //   },
-        //   exportColumns: {
-        //     ip: { label: "IP", ischecked: true },
-        //     mac: { label: "MAC", ischecked: false },
-        //     hostname: { label: "主机名", ischecked: false },
-        //     os: { label: "操作系统", ischecked: false },
-        //     port: { label: "端口", ischecked: true },
-        //     protocol: { label: "协议", ischecked: false },
-        //     product: { label: "产品", ischecked: false },
-        //   },
-        //   // exportConfig: {}
-        // };
+        return rData;
       },
       computed: {
-        updateExportInfo() {},
+        awvsStatus: {
+          get() {
+            return {
+              progress: this.cache.awvs.progress,
+              high: this.cache.awvs.high,
+              medium: this.cache.awvs.medium,
+              low: this.cache.awvs.low,
+              info: this.cache.awvs.info,
+            };
+          },
+          set(n_val = { progress: 0, high: 0, medium: 0, low: 0, info: 0 }) {
+            this.cache.awvs.progress = rUtils.isHave(n_val.progress)
+              ? n_val.progress
+              : this.cache.awvs.progress;
+            this.cache.awvs.high = rUtils.isHave(n_val.high)
+              ? n_val.progress
+              : this.cache.awvs.high;
+            this.cache.awvs.medium = rUtils.isHave(n_val.medium)
+              ? n_val.medium
+              : this.cache.awvs.medium;
+            this.cache.awvs.low = rUtils.isHave(n_val.low)
+              ? n_val.low
+              : this.cache.awvs.low;
+            this.cache.awvs.info = rUtils.isHave(n_val.info)
+              ? n_val.info
+              : this.cache.awvs.info;
+          },
+        },
+        fscanStatus: {
+          get() {
+            return {
+              progress: this.cache.fscan.progress,
+              vulnum: this.cache.fscan.vulnum,
+            };
+          },
+          set(n_val = { progress: 0, vulnum: 0 }) {
+            this.cache.fscan.progress = rUtils.isHave(n_val.progress)
+              ? n_val.progress
+              : this.cache.fscan.progress;
+            this.cache.fscan.vulnum = rUtils.isHave(n_val.vulnum)
+              ? n_val.vulnum
+              : this.cache.fscan.vulnum;
+          },
+        },
+        genCmd() {
+          // 这两个 for 循环只是为了数据更新到 DOM 而已，没有实际的执行
+          for (const key in this.checkFscan) {
+            this.checkFscan[key].ischecked;
+          }
+          for (const key in this.inputFscan) {
+            this.inputFscan[key].ischecked;
+            this.inputFscan[key].value;
+          }
+          return rFscan.genCmd("{GobyIp}", ["{GobyPort}"]);
+        },
       },
       methods: {
-        // exportConfigUpdate() {
-        //   goby.getAsset(goby.getTaskId(), function (taskinfos) {
-        //     taskinfos.total.taskId = taskinfos.taskId
-        //     return taskinfos.total
-        //   })
-        // },
         async inTaskPanel() {
-          if (goby.getTaskId()) {
+          if (await rGoby.getTaskId()) {
             return true;
           }
-          goby.showInformationMessage("请进入任务面板后再使用该功能");
+          rGoby.showMsg("请进入任务面板后再使用该功能");
           return false;
         },
         async switchPanel(panel_name) {
@@ -393,12 +528,11 @@
             }
           }
         },
-        async saveConfig() {
-          filename = utils.path.join(utils.pathlist.root, "src", "config.json");
-          let save_config = utils.deepClone(utils.config);
-          delete save_config["cache"];
-          utils.fileWrite(filename, JSON.stringify(save_config));
-          goby.showInformationMessage("保存成功");
+        async saveConfig(is_show_msg = true) {
+          rData.saveConfig();
+          if (is_show_msg) {
+            rGoby.showMsg("保存成功", rGoby.msgtype.suc);
+          }
         },
         async queryData(
           options = {
@@ -408,16 +542,16 @@
           }
         ) {
           let self = this;
-          await self.inTaskPanel();
           let ret = [];
-          let taskinfos;
-          await new Promise((resolve) => {
-            goby.getAsset(goby.getTaskId(), function (data) {
-              taskinfos = data;
-              resolve();
-            });
-          });
-          for (ip_inf of taskinfos.data.ips) {
+          if (!(await self.inTaskPanel())) {
+            return ret;
+          }
+          let taskinfos = await rGoby.getAsset();
+          if (!taskinfos.ips) {
+            rGoby.showMsg("当前任务无资产");
+            return ret;
+          }
+          for (ip_inf of taskinfos.ips) {
             let tags = [];
             if (ip_inf.tags) {
               for (tag of ip_inf.tags) {
@@ -440,7 +574,7 @@
             // is_web 该参数取消，有些protocols是http、https协议，但web就是没标记
             if (!ip_inf.ports) {
               let t_data = options.data_handler(ip_base_inf);
-              if (utils.isHave(t_data)) {
+              if (rUtils.isHave(t_data)) {
                 ret.push(t_data);
               }
               continue;
@@ -450,11 +584,11 @@
               row_info.port = port.port;
               row_info.baseprotocol = port.baseprotocol;
               let netloc = row_info.ip + ":" + row_info.port;
-              if (utils.isHave(ip_inf.protocols) && ip_inf.protocols[netloc]) {
+              if (rUtils.isHave(ip_inf.protocols) && ip_inf.protocols[netloc]) {
                 row_info.protocol = ip_inf.protocols[netloc].protocol;
               }
               let t_data = options.data_handler(row_info);
-              if (utils.isHave(t_data)) {
+              if (rUtils.isHave(t_data)) {
                 ret.push(t_data);
               }
             }
@@ -467,191 +601,324 @@
           let result = await self.queryData({
             data_handler: (row) => {
               for (let col in row) {
-                if (!self.exportColumns[col].ischecked) {
+                if (!self.eprtUtil[col].ischecked) {
                   delete row[col];
                 }
               }
               return row;
             },
           });
-          filename = utils.path.join(
-            utils.pathlist.data,
-            "export_gobytask_" + utils.timeFormat("%Y%m%d_%H%M%S")
+          if (!rUtils.isHave(result)) {
+            return;
+          }
+          filename = rUtils.path.join(
+            rUtils.paths.data,
+            "export_gobytask_" + rUtils.timeFormat("%Y%m%d_%H%M%S")
           );
-          utils.fileWrite(filename + ".json", JSON.stringify(result));
-          utils.fileWrite(filename + ".csv", utils.genCSVText(result));
+          rUtils.fileWrite(filename + ".json", JSON.stringify(result));
+          rUtils.fileWrite(filename + ".csv", rUtils.genCSVText(result));
 
-          goby.showInformationMessage("导出完成，文件保存为：" + filename);
+          rGoby.showMsg(
+            `导出完成，文件保存在 ${rUtils.paths.data} 目录下`,
+            rGoby.msgtype.suc
+          );
+          // rGoby.showMsg("导出完成，文件保存为：" + filename, rGoby.msgtype.suc);
           console.log("导出文件名为：", filename, "数据为：", result);
         },
         async exportScanData(event) {
-          if (!utils.isHave(utils.config.cache.awvs.target_infos)) {
-            goby.showInformationMessage("当前Goby任务未提交过扫描");
+          if (
+            !rUtils.isHave(this.cache.awvs.targs_infos) &&
+            !rUtils.isHave(this.cache.fscan.targs_infos)
+          ) {
+            rGoby.showMsg("AWVS/FSCAN 扫描缓存数据不存在");
             return;
           }
-          let response = await utils.awvs.getResults(
-            utils.objectValues(utils.config.cache.awvs.target_infos)
-          );
-          let export_data = [];
-
-          for (const iter of response) {
-            if (!utils.isHave(iter.scanning_app.wvs.main.vulns)) {
-              continue;
-            }
-            let host_info = utils.objectValues(iter.scanning_app.wvs.hosts)[0];
-            let severity2name = ["info", "low", "medium", "high"];
-            let t_data = {
-              status: iter.status,
-              start_date: iter.scanning_app.wvs.start_date || "-",
-              end_date: iter.scanning_app.wvs.end_date || "-",
-              host: host_info.host,
-              ip: host_info.host.split(":")[0],
-              port: host_info.host.split(":")[1],
-              os: host_info.target_info.os,
-              vuln_name: "",
-              severity: 0,
-            };
-            for (const vuln of iter.scanning_app.wvs.main.vulns) {
-              let vuln_data = utils.deepClone(t_data);
-              vuln_data.vuln_name = vuln.name;
-              vuln_data.severity = severity2name[vuln.severity];
-              export_data.push(vuln_data);
-            }
+          if (
+            (!this.scanUtil.awvs.isable || !this.scanUtil.awvs.ischecked) &&
+            (!this.scanUtil.fscan.isable || !this.scanUtil.fscan.ischecked)
+          ) {
+            rGoby.showMsg("AWVS/FSCAN 未启动或未部署");
+            return;
           }
-          filename = utils.path.join(
-            utils.pathlist.data,
-            "export_scan_result_" + utils.timeFormat("%Y%m%d_%H%M%S")
-          );
-          utils.fileWrite(filename + ".json", JSON.stringify(export_data));
-          utils.fileWrite(filename + ".csv", utils.genCSVText(export_data));
+          let filename_list = [];
 
-          goby.showInformationMessage("导出完成，文件保存为：" + filename);
-          console.log("导出文件名为：", filename, "数据为：", export_data);
+          if (
+            this.scanUtil.awvs.isable &&
+            this.scanUtil.awvs.ischecked &&
+            rUtils.isHave(this.cache.awvs.targs_infos)
+          ) {
+            let response = await rAwvs.getResults(
+              rUtils.objectValues(this.cache.awvs.targs_infos)
+            );
+            let export_data = [];
+            for (const iter of response) {
+              if (!rUtils.isHave(iter.scanning_app.wvs.main.vulns)) {
+                continue;
+              }
+              let host_info = rUtils.objectValues(
+                iter.scanning_app.wvs.hosts
+              )[0];
+              let severity2name = ["info", "low", "medium", "high"];
+              let t_data = {
+                status: iter.status,
+                start_date: iter.scanning_app.wvs.start_date || "-",
+                end_date: iter.scanning_app.wvs.end_date || "-",
+                host: host_info.host,
+                ip: host_info.host.split(":")[0],
+                port: host_info.host.split(":")[1],
+                os: host_info.target_info.os,
+                vuln_name: "",
+                severity: 0,
+              };
+              for (const vuln of iter.scanning_app.wvs.main.vulns) {
+                let vuln_data = rUtils.deepClone(t_data);
+                vuln_data.vuln_name = vuln.name;
+                vuln_data.severity = severity2name[vuln.severity];
+                export_data.push(vuln_data);
+              }
+            }
+            filename = rUtils.path.join(
+              rUtils.paths.data,
+              "export_awvs_result_" + rUtils.timeFormat("%Y%m%d_%H%M%S")
+            );
+            filename_list.push(filename);
+            rUtils.fileWrite(filename + ".json", JSON.stringify(export_data));
+            rUtils.fileWrite(filename + ".csv", rUtils.genCSVText(export_data));
+          }
+          if (
+            this.scanUtil.fscan.isable &&
+            this.scanUtil.fscan.ischecked &&
+            rUtils.isHave(this.cache.fscan.targs_infos)
+          ) {
+            let last_output = "";
+            let export_data = [];
+            let cols = ["host", "port", "netloc", "vuln_name"];
+
+            for (const key in this.cache.fscan.targs_infos) {
+              if (last_output == this.cache.fscan.targs_infos.results_output) {
+                continue;
+              }
+              let content = rUtils.fileRead(
+                this.cache.fscan.targs_infos[key].results_output
+              );
+              if (content) {
+                export_data.push(content);
+              }
+              last_output = this.cache.fscan.targs_infos[key].results_output;
+              // 不匹配了，fscan 的结果输出太捞了
+              // re_result = content.match(/\[\+\] .+/g);
+              // for (const iter of re_result) {
+              //   re_host = iter.match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/g);
+              //   re_port = iter.match(/\d{1,3}:(\d{1,5})/g);
+              //   host = re_host[0]
+              //   port = re_port[0].split(':')[1]
+              //   re_vuln_name = iter.match(/[- \w]+$/g);
+              //   console.log('DBG', host,port, re_vuln_name)
+              // }
+            }
+            export_data = export_data.join("\n");
+            filename = rUtils.path.join(
+              rUtils.paths.data,
+              "export_fscan_result_" + rUtils.timeFormat("%Y%m%d_%H%M%S")
+            );
+            filename_list.push(filename);
+            // rUtils.fileWrite(filename + ".json", JSON.stringify(export_data));
+            rUtils.fileWrite(filename + ".txt", export_data);
+          }
+
+          rGoby.showMsg(
+            `导出完成，文件保存在 ${rUtils.paths.data} 目录下`,
+            rGoby.msgtype.suc
+          );
+          // rGoby.showMsg(
+          //   "导出完成，文件保存为：" + filename_list.join("、"),
+          //   rGoby.msgtype.suc
+          // );
+          console.log("导出文件名为：", filename_list.join("、"));
         },
         async queryScanStatus() {
-          let scan_info = utils.config.cache.awvs;
+          let self = this;
+          let scan_info = rUtils.deepClone(this.cache.awvs);
           let keys_len = 0;
+
           scan_info.progress = 0;
           scan_info.high = 0;
           scan_info.medium = 0;
           scan_info.low = 0;
           scan_info.info = 0;
-          if (!utils.isHave(utils.config.cache.awvs.target_infos)) {
+          if (
+            rUtils.isHave(scan_info.targs_infos) &&
+            this.scanUtil.awvs.isable
+          ) {
+            keys_len = 0;
+            for (let key in scan_info.targs_infos) {
+              let response = await rAwvs.getScan(
+                scan_info.targs_infos[key].scan_id
+              );
+              if (!rUtils.isHave(response.current_session)) {
+                continue;
+              }
+              let status = response.current_session;
+              scan_info.progress += status.progress;
+              scan_info.high += status.severity_counts.high;
+              scan_info.medium += status.severity_counts.medium;
+              scan_info.low += status.severity_counts.low;
+              scan_info.info += status.severity_counts.info;
+              keys_len += 1;
+            }
+            scan_info.progress = Math.floor(scan_info.progress / keys_len);
+          }
+          this.awvsStatus = scan_info;
+
+          scan_info = rUtils.deepClone(this.cache.fscan);
+          scan_info.progress = 0;
+          scan_info.vulnum = 0;
+          if (
+            rUtils.isHave(scan_info.targs_infos) &&
+            this.scanUtil.fscan.isable
+          ) {
+            keys_len = 0;
+            for (let key in scan_info.targs_infos) {
+              let tmp_progress = 0;
+              content = rUtils.fileRead(
+                scan_info.targs_infos[key].console_output
+              );
+              let re_result = content.match(/start .+/g);
+              let re_len = re_result ? re_result.length : 0;
+              tmp_progress = re_len * 15;
+
+              re_result = content.match(/\[\+\] .+/g);
+              scan_info.vulnum += re_result ? re_result.length : 0;
+
+              re_result = content.match(/\[\*\] 扫描结束,耗时: .+/g);
+              tmp_progress = re_result ? 100 : scan_info.progress;
+              keys_len += 1;
+              scan_info.progress += tmp_progress;
+            }
+            scan_info.progress = Math.floor(scan_info.progress / keys_len);
+          }
+          this.fscanStatus = scan_info;
+        },
+        async runScan(event) {
+          let self = this;
+          let targs_web = [];
+          let targs_inf = await self.queryData();
+          if (!rUtils.isHave(targs_inf)) {
             return;
           }
-          for (let key in utils.config.cache.awvs.target_infos) {
-            let response = await utils.awvs.getScan(
-              utils.config.cache.awvs.target_infos[key].scan_id
-            );
-            if (!utils.isHave(response.current_session)) {
-              continue;
-            }
-            scan_info.progress += response.current_session.progress;
-            scan_info.high += response.current_session.severity_counts.high;
-            scan_info.medium += response.current_session.severity_counts.medium;
-            scan_info.low += response.current_session.severity_counts.low;
-            scan_info.info += response.current_session.severity_counts.info;
-            keys_len += 1;
-          }
-          scan_info.progress = Math.floor(scan_info.progress / keys_len);
-          return scan_info;
-        },
-        async submitScan(event) {
-          let self = this;
-          let targets = [];
-          let result = await self.queryData();
 
-          for (data of result) {
+          // WEB 协议采集地址，支持其他协议扫描的直接添加
+          let output = `${rUtils.paths.cache}/result_${rUtils.timeFormat(
+            "%y%m%d_%H%M%S"
+          )}`;
+          let last_ip = "";
+          let last_tag_ports = [];
+          let max_targs_inf_index = targs_inf.length - 1;
+          let new_app_num = 0;
+          let new_web_num = 0;
+          for (const [index, data] of targs_inf.entries()) {
             if (data.protocol === "http" || data.protocol === "https") {
-              targets.push({
+              targs_web.push({
                 address: `${data.protocol}://${data.ip}:${data.port}`,
                 description: "RelaxHelper Task",
               });
             }
+            if (!last_ip) last_ip = data.ip;
+            if (data.ip === last_ip && index !== max_targs_inf_index) {
+              last_tag_ports.push(data.port);
+              continue;
+            }
+            if (!rUtils.isHave(this.cache.fscan.targs_infos[last_ip])) {
+              rFscan.addScanCmd(last_ip, last_tag_ports, output);
+              new_app_num += 1;
+            }
+            last_ip = data.ip;
+            last_tag_ports = [];
           }
-          if (!utils.isHave(targets)) {
-            goby.showInformationMessage(`未发现 WEB 端口，操作取消`);
-            return;
+          if (new_app_num) {
+            rFscan.exeCmd();
           }
-          let raw_len = utils.objectKeys(
-            utils.config.cache.awvs.target_infos
-          ).length;
 
-          utils.config.cache.awvs.target_infos = await utils.awvs.autoScans(
-            targets,
-            { target_infos: utils.config.cache.awvs.target_infos }
-          );
-
-          let new_number =
-            utils.objectKeys(utils.config.cache.awvs.target_infos).length -
-            raw_len;
-          if (new_number === 0) {
-            goby.showInformationMessage(
-              `未新增目标，AWVS无响应或当前任务的目标均加入过扫描队列`
-            );
-          } else {
-            goby.showInformationMessage(
-              `开始扫描，新增 ${new_number} 个目标，数量较多的时候 AWVS 扫描启动会有约 3 分钟的延迟`
-            );
+          let raw_targs_web_len = 0;
+          if (rUtils.isHave(targs_web)) {
+            raw_targs_web_len = rUtils.objectKeys(
+              this.cache.awvs.targs_infos
+            ).length;
+            if (this.scanUtil.awvs.ischecked) {
+              this.cache.awvs.targs_infos = await rAwvs.autoScans(targs_web, {
+                targs_infos: this.cache.awvs.targs_infos,
+              });
+            }
           }
-          // utils.config.cache.awvs.target_infos = utils.objectUpdate(
-          //   utils.config.cache.awvs.target_infos,
-          //   ret
-          // );
-          utils.fileWrite(
-            utils.path.join(utils.pathlist.cache, "awvs_cache.json"),
-            JSON.stringify(utils.config.cache.awvs)
+
+          new_web_num =
+            rUtils.objectKeys(this.cache.awvs.targs_infos).length -
+            raw_targs_web_len;
+          rGoby.showMsg(
+            `新增 ${new_web_num} 个 WEB 扫描，新增 ${new_app_num} 个应用扫描`,
+            rGoby.msgtype.suc
           );
+          await self.saveConfig(false);
         },
         async deleteAllTarget(event) {
-          let is_clear = confirm("确认要清空 AWVS 中的所有目标");
+          let is_clear = confirm("确认要清空 AWVS/FSCAN 中的所有目标");
           if (!is_clear) {
             return;
           }
-          let ret = await utils.awvs.getTargets({ limit: -1 });
-          let target_id_list = [];
-          if (!utils.isHave(ret)) {
-            return;
+          if (
+            this.scanUtil.awvs.isable &&
+            rUtils.isHave(this.cache.awvs.targs_infos)
+          ) {
+            let ret = await rAwvs.getTargets({ limit: -1 });
+            let target_id_list = [];
+            if (rUtils.isHave(ret)) {
+              for (const target of ret.targets) {
+                target_id_list.push(target.target_id);
+              }
+              ret = await rAwvs.deleteTargets(target_id_list);
+
+              this.cache.awvs.targs_infos = {};
+              this.awvsStatus = {
+                progress: 0,
+                high: 0,
+                medium: 0,
+                low: 0,
+                info: 0,
+              };
+            }
           }
-          for (const target of ret.targets) {
-            target_id_list.push(target.target_id);
+          if (rUtils.isHave(this.cache.fscan.targs_infos)) {
+            this.cache.fscan.targs_infos = {};
+            this.fscanStatus = {
+              progress: 0,
+              vulnum: 0,
+            };
           }
-          ret = await utils.awvs.deleteTargets(target_id_list);
-          utils.config.cache.awvs = {
-            target_infos: {},
-            progress: 0,
-            high: 0,
-            medium: 0,
-            low: 0,
-            info: 0,
-          };
-          utils.fileWrite(
-            utils.path.join(utils.pathlist.cache, "awvs_cache.json"),
-            JSON.stringify(utils.config.cache.awvs)
-          );
-          goby.showInformationMessage(
-            `清空完成，AWVS会稍有延迟，等待 3 分钟后再进行刷新`
+          await this.saveConfig(false);
+          rGoby.showMsg(
+            `清空完成，AWVS会稍有延迟，等待 3 分钟后再进行刷新`,
+            rGoby.msgtype.suc
           );
         },
         async search(page) {
           let self = this;
-          if (!utils.isHave(self.cache.fofa.query)) {
-            goby.showInformationMessage(`请输入搜索语法`);
+          if (!rUtils.isHave(self.cache.fofa.query)) {
+            rGoby.showMsg(`请输入搜索语法`);
             return;
           }
           page = page || 1;
-          let ret = await utils.fofa.searchAll(self.cache.fofa.query, {
+          let ret = await rFofa.searchAll(self.cache.fofa.query, {
             page: page,
             size: self.cache.fofa.pageSize,
-            full: self.searchColumns.ischecked,
+            full: self.srchUtil.ischecked,
           });
           if (ret.error) {
-            goby.showInformationMessage(`错误：${ret.errmsg}`);
+            rGoby.showMsg(`错误：${ret.errmsg}`, rGoby.msgtype.err);
             return;
           }
 
           self.cache.fofa.results = ret.results;
-          self.cache.fofa.pageList = utils.genPageList(
+          self.cache.fofa.pageList = rUtils.genPageList(
             page,
             Math.ceil(ret.size / self.cache.fofa.pageSize),
             9
@@ -673,8 +940,9 @@
         },
         async addToGobyScan(event) {
           let self = this;
-          if (!utils.isHave(self.cache.fofa.resultsSelected)) {
-            goby.showInformationMessage(`错误：未选中任意目标`);
+          if (!rUtils.isHave(self.cache.fofa.resultsSelected)) {
+            rGoby.showMsg(`错误：未选中任意目标`, rGoby.msgtype.err);
+            return;
           }
           let ips = [];
           for (let result of self.cache.fofa.resultsSelected) {
@@ -685,9 +953,10 @@
             ips.push(ip);
           }
           // GOBY addScanIps 这个 API 有 BUG 第二参数为 0 的时候会塞入一个 undefined 字符串进去，如果是 1 的话就正常
-          goby.addScanIps(ips, 1);
-          goby.showInformationMessage(
-            `共选择 ${self.cache.fofa.resultsSelected.length} 个目标，已将 ${ips.length} 个目标加入扫描列表，部分IP会被去重`
+          await rGoby.addScanIps(ips, 1);
+          rGoby.showMsg(
+            `共选择 ${self.cache.fofa.resultsSelected.length} 个目标，已将 ${ips.length} 个目标加入扫描列表，部分IP会被去重`,
+            rGoby.msgtype.suc
           );
         },
         async selectAll(event) {
