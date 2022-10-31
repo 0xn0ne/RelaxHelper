@@ -1,117 +1,122 @@
-# Goby 插件 Relax 用法
+# Relax Helper
 
-使用 Vue + Bootstrap 开发的 Goby 插件，目前拥有以下功能：
+[简体中文](./README_CN.md) | English
 
-- 导出 Goby 扫描任务的数据
-- 使用 AWVS 扫描 WEB 系统
-- 导出 AWVS 扫描任务的漏洞数据
-- 使用 FOFA 信息收集，**注：**需VIP
-- 将 FOFA 收集到的 IP 添加至 Goby 新建扫描任务中，**注：**目前只能添加一页，最大一页搜索量改成 2000 怎么说也够用了吧
+The Goby plugin, developed using Vue + Bootstrap, currently has the following features.
 
-**注意：**
+- Exporting data from Goby scan jobs
+- Scanning WEB systems with AWVS
+- Scanning applications with FSCAN, weak passwords
+- Exporting vulnerability data for AWVS, FSCAN scanning tasks
+- Use FOFA information collection, **Note:**VIP required
+- Add the IPs collected by FOFA to Goby's new scan task, **Note:**At present, you can only add one page, change the maximum search volume to 2000 pages, which is enough to use, right?
 
-- 导出数据默认导出至插件文件夹的 datadir 目录下
-- Windows 数据目录：Goby安装目录\extensions\插件编号、插件名称\datadir
-- Mac 数据目录：/Users/当前用户名/goby/extensions/插件编号、插件名称/datadir
+Translated with www.DeepL.com/Translator (free version)
 
-项目地址：<https://github.com/0xn0ne/RelaxHelper>
+**Note:**
 
-## 快速开始
+- Export data is exported to the datadir directory of the plug-in folder by default
+- Windows data directory: Goby installation directory\extensions\plugin number, plugin name\datadir
+- Mac data directory: /Users/current username/goby/extensions/plugin number, plugin name/datadir
 
-1. 通过扩展商店安装
-2. （可跳过）配置好 AWVS 或 FOFA 的地址、邮箱、API密钥
+Project address: <https://github.com/0xn0ne/RelaxHelper>
+
+## Quick Start
+
+1. Install via the extension store
+2. (Can be skipped) Configure AWVS or FOFA address, email, API key
 
     ![Untitled](./src/assets/images/Untitled.png)
 
-3. 右侧工具栏处点击图标打开 Relax 控制面板
+3. Click on the icon in the right toolbar to open the Relax control panel
 
     ![Untitled](./src/assets/images/Untitled%201.png)
 
-4. 开始操作
+4. Start the operation
 
-## 手动安装
+## Manual installation
 
-### 依赖
+### Dependencies
 
 - nodejs v16+
 
-### 操作步骤
+### Operation steps
 
-1. 下载本插件文件
-2. 将文件复制到 Goby 的 extensions 插件目录
-3. 进入到本插件目录下，使用 `npm install` 命令安装插件依赖
-4. 重启 Goby 即可
+1. download the plugin file
+2. Copy the file to Goby's extensions plugin directory
+3. Go to the plugin directory and use the `npm install` command to install the plugin dependencies
+4. Restart Goby and you are done
 
-- Windows 插件目录：C:\Users\当前用户名\goby\extensions\
-- Mac 插件目录：/Users/当前用户名/goby/extensions/
+- Windows plugin directory: C:\Users\current username\goby\extensions\
+- Mac plugin directory: /Users/current-username/goby/extensions/
 
-## 功能说明
+## Function description
 
-### 导出功能
+### Export function
 
 ![Untitled](./src/assets/images/Untitled%202.png)
 
-该功能用于 Goby 扫描任务数据导出，需要进入任务面板后再操作
+This function is used for Goby scan job data export and requires access to the job panel before operation
 
-1. 进入任务面板
+1. Go to the task panel
 
     ![Untitled](./src/assets/images/Untitled%203.png)
 
-2. 根据需要勾选导出字段，点击**导出任务数据**即可将当前 Goby 扫描数据导出，路径会出现在提示框
+2. Check the Export field as needed and click **Export Task Data** to export the current Goby scan data, the path will appear in the prompt box
 
     ![Untitled](./src/assets/images/Untitled%204.png)
 
-3. 点击**保存配置**可以将导出、扫描当前的配置全部保存下来，重新打开 Relax 后就不需要重新勾选了
-4. 会导出 CSV 和 JSON 格式的数据，数据内容如下
+3. Click **Save Configuration** to save all the exported and scanned current configurations, so you don't need to re-check them after reopening Relax.
+The data will be exported in CSV and JSON format, and the data content is as follows
 
     ![Untitled](./src/assets/images/Untitled%205.png)
 
-### 扫描功能
+### Scanning function
 
 ![Untitled](./src/assets/images/Untitled%206.png)
 
-该功能用于联动第三方工具，拓展扫描能力，目前仅整了AWVS、FSCAN，需要进入任务面板后再操作
+This feature is used to link third-party tools to expand scanning capabilities, currently only the whole AWVS, FSCAN, you need to enter the task panel and then operate
 
-1. 使用前需确认 Goby 插件配置页面的 **AWVS API KEY**、**AWVS ADDRESS**、**FSCAN PATH** 配置是否正确
-2. 配置不正确或 AWVS、FSCAN 无法连接的情况下，AWVS 或 FSCAN 扫描是无法启动的，重新配置后重新打开 Goby 才可使用
+1. Before use, you need to confirm the correct configuration of **AWVS API KEY**, **AWVS ADDRESS**, **FSCAN PATH** on the configuration page of Goby plug-in.
+2. If the configuration is incorrect or AWVS or FSCAN cannot be connected, AWVS or FSCAN scanning cannot be started, so re-open Goby after reconfiguration.
 
     ![Untitled](./src/assets/images/Untitled%207.png)
 
-3. 点击**提交扫描任务**可将当前资产提交至启动的扫描系统中进行扫描，会自动筛选 http 或 https 协议的端口到 AWVS 进行扫描，目标数量会和资产数量有差别
+3. Click **Submit Scan Job** to submit the current asset to the launched scanning system for scanning, it will automatically filter the http or https protocol ports to AWVS for scanning, the number of targets will be different from the number of assets
 
     ![Untitled](./src/assets/images/Untitled%208.png)
 
-4. 这里会显示扫描进度和漏洞数量，每次重新打开面板 Relax 都会更新一次数据
+4. Here will display the progress of the scan and the number of vulnerabilities, each time you reopen the panel Relax will update the data once
 
     ![Untitled](./src/assets/images/Untitled%209.png)
 
-5. 点击**清空所有目标**会清空 AWVS、FSCAN 中的所有 Targets。**注意：**无论是不是 Relax 添加的 Targets 都会被清空，扫描结果也会被清空
-6. 点击**导出数据**会导出 AWVS、FSCAN 当前扫描数据，扫描过程中也可以导出，导出数据如下
+5. Click **Clear All Targets** to clear all Targets in AWVS, FSCAN.**Note:**All Targets will be cleared whether they are added by Relax or not, and the scan results will also be cleared.
+6. Click **Export Data** to export the current scan data of AWVS and FSCAN, you can also export the data during the scanning process, the export data is as follows
 
     ![Untitled](./src/assets/images/Untitled%2010.png)
 
-### 搜索功能
+### Search function
 
 ![Untitled](./src/assets/images/Untitled%2011.png)
 
-该功能用于联动第三方工具，启动扫描任务，目前仅整了 FOFA，必须是 FOFA VIP 才可以使用 API
+This function is used to link third-party tools to start scanning tasks, currently only the entire FOFA, must be FOFA VIP to use the API
 
-1. 使用前需确认 **FOFA API KEY、FOFA EMAIL、** **FOFA ADDRESS** 三项配置是否正确
-2. 配置正确的情况下，输入搜索语法，点击搜索即可加载结果
+1. Before use, you need to confirm whether the configuration of **FOFA API KEY, FOFA EMAIL,** **FOFA ADDRESS** is correct.
+2. If the configuration is correct, enter the search syntax and click search to load the results
 
     ![Untitled](./src/assets/images/Untitled%2012.png)
 
-3. 选中搜索结果后，打开 Goby 的**新建扫描**任务面板，点击**添加扫描目标**即可将选中的结果添加进 Goby 扫描任务面板
+3. After selecting the search results, open Goby's **New Scan** task panel and click **Add Scan Target** to add the selected results to the Goby scan task panel
 
     ![Untitled](./src/assets/images/Untitled%2013.png)
 
-### 备注
+### Remarks
 
-- 做操作的时候没有弹出提示可能说明连接失败之类的情况，检查一下 AWVS 或 FOFA 的配置是否正确或者能正常连接
-- 很久不碰代码了，写得有点乱，我自己看着都头疼，目前还没有弄其他功能打算
-- 这是 1 个月赶出来的东西，不要抱太大期望
-- 如果有 BUG 请提 Issues
+- When doing the operation no pop-up prompt may indicate that the connection failed or something like that, check whether the configuration of AWVS or FOFA is correct or can be connected normally
+- It's been a long time since I touched the code, it's a bit messy to write, I have a headache myself, I don't plan to get other functions yet
+- This is a month to come up with something, do not expect too much
+- If there are bugs, please raise Issues
 
-## 操作演示
+## Operation demo
 
-文件太大太捞了，懒得更新
+The file is too big too stupid, too lazy to update
