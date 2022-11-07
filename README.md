@@ -1,6 +1,6 @@
 # Relax Helper
 
-[简体中文](./README_CN.md) | English
+[Chinese](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/translate/CN/README.md) | English
 
 The Goby plugin, developed using Vue + Bootstrap, currently has the following features.
 
@@ -10,8 +10,6 @@ The Goby plugin, developed using Vue + Bootstrap, currently has the following fe
 - Exporting vulnerability data for AWVS, FSCAN scanning tasks
 - Use FOFA information collection, **Note:**VIP required
 - Add the IPs collected by FOFA to Goby's new scan task, **Note:**At present, you can only add one page, change the maximum search volume to 2000 pages, which is enough to use, right?
-
-Translated with www.DeepL.com/Translator (free version)
 
 **Note:**
 
@@ -26,11 +24,11 @@ Project address: <https://github.com/0xn0ne/RelaxHelper>
 1. Install via the extension store
 2. (Can be skipped) Configure AWVS or FOFA address, email, API key
 
-    ![Untitled](./src/assets/images/Untitled.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled.png?raw=true)
 
 3. Click on the icon in the right toolbar to open the Relax control panel
 
-    ![Untitled](./src/assets/images/Untitled%201.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%201.png?raw=true)
 
 4. Start the operation
 
@@ -54,61 +52,61 @@ Project address: <https://github.com/0xn0ne/RelaxHelper>
 
 ### Export function
 
-![Untitled](./src/assets/images/Untitled%202.png)
+![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%202.png?raw=true)
 
 This function is used for Goby scan job data export and requires access to the job panel before operation
 
 1. Go to the task panel
 
-    ![Untitled](./src/assets/images/Untitled%203.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%203.png?raw=true)
 
 2. Check the Export field as needed and click **Export Task Data** to export the current Goby scan data, the path will appear in the prompt box
 
-    ![Untitled](./src/assets/images/Untitled%204.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%204.png?raw=true)
 
 3. Click **Save Configuration** to save all the exported and scanned current configurations, so you don't need to re-check them after reopening Relax.
 The data will be exported in CSV and JSON format, and the data content is as follows
 
-    ![Untitled](./src/assets/images/Untitled%205.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%205.png?raw=true)
 
 ### Scanning function
 
-![Untitled](./src/assets/images/Untitled%206.png)
+![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%206.png?raw=true)
 
 This feature is used to link third-party tools to expand scanning capabilities, currently only the whole AWVS, FSCAN, you need to enter the task panel and then operate
 
 1. Before use, you need to confirm the correct configuration of **AWVS API KEY**, **AWVS ADDRESS**, **FSCAN PATH** on the configuration page of Goby plug-in.
 2. If the configuration is incorrect or AWVS or FSCAN cannot be connected, AWVS or FSCAN scanning cannot be started, so re-open Goby after reconfiguration.
 
-    ![Untitled](./src/assets/images/Untitled%207.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%207.png?raw=true)
 
 3. Click **Submit Scan Job** to submit the current asset to the launched scanning system for scanning, it will automatically filter the http or https protocol ports to AWVS for scanning, the number of targets will be different from the number of assets
 
-    ![Untitled](./src/assets/images/Untitled%208.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%208.png?raw=true)
 
 4. Here will display the progress of the scan and the number of vulnerabilities, each time you reopen the panel Relax will update the data once
 
-    ![Untitled](./src/assets/images/Untitled%209.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%209.png?raw=true)
 
 5. Click **Clear All Targets** to clear all Targets in AWVS, FSCAN.**Note:**All Targets will be cleared whether they are added by Relax or not, and the scan results will also be cleared.
 6. Click **Export Data** to export the current scan data of AWVS and FSCAN, you can also export the data during the scanning process, the export data is as follows
 
-    ![Untitled](./src/assets/images/Untitled%2010.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%2010.png?raw=true)
 
 ### Search function
 
-![Untitled](./src/assets/images/Untitled%2011.png)
+![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%2011.png?raw=true)
 
 This function is used to link third-party tools to start scanning tasks, currently only the entire FOFA, must be FOFA VIP to use the API
 
 1. Before use, you need to confirm whether the configuration of **FOFA API KEY, FOFA EMAIL,** **FOFA ADDRESS** is correct.
 2. If the configuration is correct, enter the search syntax and click search to load the results
 
-    ![Untitled](./src/assets/images/Untitled%2012.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%2012.png?raw=true)
 
 3. After selecting the search results, open Goby's **New Scan** task panel and click **Add Scan Target** to add the selected results to the Goby scan task panel
 
-    ![Untitled](./src/assets/images/Untitled%2013.png)
+    ![Untitled](https://github.com/0xn0ne/RelaxHelper/blob/main/src/assets/images/Untitled%2013.png?raw=true)
 
 ### Remarks
 

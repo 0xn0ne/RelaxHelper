@@ -74,9 +74,18 @@ let files = walkSync("./", [
   /.*\.key/,
 ]);
 
+let dir_base_list = __dirname.split(path.sep);
+let dir_base_str = dir_base_list[dir_base_list.length - 1];
+let dir_base = zip.folder(dir_base_str);
+
 for (const dirname in files) {
   // 打包文件夹里的文件
-  let dir_curr = zip.folder(dirname);
+  let dir_curr;
+  if (dirname === "." + path.sep) {
+    dir_curr = dir_base;
+  } else {
+    dir_curr = dir_base.folder(dirname);
+  }
   for (const filename of files[dirname]) {
     let name_list = filename.split(path.sep);
 
@@ -103,4 +112,17 @@ zip
         console.log("压缩失败");
       }
     });
+    let name_list_for_upload = `${__dirname}.zip`.split(path.sep);
+    fs.writeFile(
+      name_list_for_upload[name_list_for_upload.length - 1],
+      content,
+      function (err) {
+        if (!err) {
+          // 写入磁盘成功
+          console.log("压缩成功");
+        } else {
+          console.log("压缩失败");
+        }
+      }
+    );
   });

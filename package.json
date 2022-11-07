@@ -2,7 +2,7 @@
   "name": "RelaxHelper",
   "publisher": "0xn0ne",
   "description": "just so so.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "icon": "src/assets/images/logo.png",
   "engines": "1.8.230",
   "initEvents": "",
@@ -12,37 +12,37 @@
       "AWVS API KEY": {
         "type": "string",
         "default": "",
-        "description": "请输入 AWVS API 密钥",
+        "description": "please enter AWVS api key",
         "fromDialog": true
       },
       "AWVS ADDRESS": {
         "type": "string",
         "default": "https://127.0.0.1:3443/",
-        "description": "请输入 AWVS 应用地址",
+        "description": "please enter AWVS address. eg. https://127.0.0.1:3443/",
         "fromDialog": true
       },
       "FSCAN PATH": {
         "type": "string",
         "default": "",
-        "description": "请输入 FSCAN 路径",
+        "description": "please enter FSCAN path. eg. C:\\Users\\username\\Downloads\\fscan.exe",
         "fromDialog": true
       },
       "FOFA API KEY": {
         "type": "string",
         "default": "",
-        "description": "请输入 FOFA API 密钥",
+        "description": "please enter FOFA api key",
         "fromDialog": true
       },
       "FOFA EMAIL": {
         "type": "string",
         "default": "root@fofa.info",
-        "description": "请输入 FOFA 邮箱",
+        "description": "please enter FOFA login email. eg. root@fofa.info",
         "fromDialog": true
       },
       "FOFA ADDRESS": {
         "type": "string",
         "default": "https://fofa.info/",
-        "description": "请输入 FOFA 应用地址",
+        "description": "please enter FOFA address. eg. https://fofa.info/",
         "fromDialog": true
       }
     },
@@ -50,15 +50,14 @@
       "toolbar": [
         {
           "command": "relax_menu",
-          "title": "进入 relax 菜单",
+          "title": "relax menu",
           "icon": "src/assets/images/logo.png"
         }
       ]
     }
   },
   "language": {
-    "CN": "src/assets/translate/translate_cn.json",
-    "EN": "src/assets/translate/translate_en.json"
+    "CN": "src/assets/translate/CN/translate.json"
   },
   "scripts": {
     "build": "node ./build.js"

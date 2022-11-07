@@ -1,10 +1,14 @@
 ## 0.1.0 - 20220917
 
-工具发布
++ Tool Release
 
 ## 0.2.0 - 20221031
 
-+ 加入FSCAN
-+ 增加系统运行检测
-+ 优化UI
-+ 优化交互逻辑
++ Add FSCAN
++ Add system operation detection
++ Optimize UI
++ Optimize interaction logic
+
+## 0.2.1 - 20221031
+
++ Update some path
